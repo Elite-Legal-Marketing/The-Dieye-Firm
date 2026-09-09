@@ -135,7 +135,14 @@ const copy = await getConsultForm();
             <span class="cinfo__icon" aria-hidden="true" set:html={iconHours} />
             <span class="cinfo__text">
               <span class="cinfo__label">Business Hours</span>
-              <span class="cinfo__value">{hours.days}:<br />{hours.time}</span>
+              <span class="cinfo__value">
+                {hours.map((row) => (
+                  <span class="cinfo__hours-row">
+                    <span class="cinfo__hours-days">{row.days}</span>
+                    <span class="cinfo__hours-time">{row.time}</span>
+                  </span>
+                ))}
+              </span>
             </span>
           </li>
         </ul>
@@ -371,6 +378,28 @@ const copy = await getConsultForm();
     font-weight: 700;
     line-height: 1.4;
     color: var(--navy-700);
+  }
+
+  /* Days over hours, which is what the single-row version always did — the
+     card is only ~250px wide inside its padding, and side-by-side columns
+     squeezed "8:00 AM – 6:00 PM" onto four lines. Rows are separated by space
+     rather than a rule so the three read as one block. */
+  .cinfo__hours-row {
+    display: block;
+  }
+
+  .cinfo__hours-row + .cinfo__hours-row {
+    margin-top: 8px;
+  }
+
+  .cinfo__hours-days,
+  .cinfo__hours-time {
+    display: block;
+  }
+
+  .cinfo__hours-time {
+    font-weight: 500;
+    color: var(--ink-500);
   }
 
   /* Navy at rest, gold on hover — which is the way round `--gold-600` is
