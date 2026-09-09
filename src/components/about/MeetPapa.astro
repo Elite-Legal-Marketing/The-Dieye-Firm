@@ -446,8 +446,34 @@ const attorney = await getAttorney();
       row-gap: 48px;
     }
 
+    /* ── Safari: the portrait vanished here ─────────────────────────────
+       Every child of .meet__media is absolutely positioned, so the box has NO
+       in-flow content and its height came entirely from `aspect-ratio: 1`.
+       That is fine until you remember the base rule also sets
+       `align-self: stretch`, which is never overridden — so at mobile the box
+       was a stretch-aligned grid item asking an aspect ratio for its height.
+
+       WebKit resolves the used height from the stretch in that situation and
+       ignores the ratio. The row auto-sizes from in-flow content, of which
+       there is none, so the row is 0, the box collapses, and the photo —
+       `inset: 0` inside a zero-height box — disappears. `min-height: 0`
+       removed the only floor that had been hiding it.
+
+       Fixed by removing the dependency rather than the symptom: the photo
+       comes back INTO FLOW and carries the ratio itself. A replaced element
+       with an intrinsic ratio is the one thing every engine sizes the same
+       way, and the box now has real content to be as tall as. `align-self`
+       stops mattering, but it is set explicitly so the intent survives the
+       next edit. */
     .meet__media {
       min-height: 0;
+      align-self: start;
+    }
+
+    .meet__photo {
+      position: static;
+      display: block;
+      height: auto;
       aspect-ratio: 1;
     }
 
@@ -478,7 +504,13 @@ const attorney = await getAttorney();
     }
   }
 
-  @media (max-width: 700px) {
+  /* Stacked from 1350px down. Three across needs a body column wider than the
+     two-column desktop layout gives it at its narrow end: at 1001px the
+     portrait takes a rigid 620 of the 921 container, leaving 245 for the text,
+     and a chip spends 40px on its icon, 13 on the gap and 36 on padding before
+     any text at all. Below 1350 they were squeezed under their own min-content
+     and spilled 19px out of the document. */
+  @media (max-width: 1350px) {
     .meet__chips {
       grid-template-columns: 1fr;
     }

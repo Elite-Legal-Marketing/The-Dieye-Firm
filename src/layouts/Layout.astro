@@ -125,8 +125,12 @@ const gtmEnabled = process.env.VERCEL_ENV === "production";
       })(window,document,'script','dataLayer',gtmId);
     </script>
     )}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    {/* One icon, and it is the .ico deliberately. It carries 16/32/48 so the
+        browser picks the right one, and there is no favicon.svg: the scaffold's
+        was Astro's own rocket, declared FIRST, so every modern browser
+        preferred it over the firm's — the site shipped with Astro's logo in the
+        tab. Don't re-add an SVG without a vector of the bird to put in it. */}
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
 
     <title>{meta.title}</title>
     {meta.description && <meta name="description" content={meta.description} />}
