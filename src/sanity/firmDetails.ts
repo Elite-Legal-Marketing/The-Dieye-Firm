@@ -16,7 +16,7 @@ const FIRM_DETAILS_QUERY = defineQuery(`*[_id == "firmDetails"][0]{
   phone,
   email,
   address,
-  hours,
+  hours[]{ _key, days, time },
   socials[]{ _key, platform, url }
 }`);
 
@@ -69,7 +69,7 @@ export type FirmDetails = {
     mapEmbed: string;
     mapLink: string;
   };
-  hours: { days: string; time: string };
+  hours: { _key: string; days: string; time: string }[];
   socials: { _key: string; label: string; href: string; path: string }[];
 };
 
@@ -147,7 +147,7 @@ async function fetchFirmDetails(): Promise<FirmDetails> {
          is directions to it. */
       mapLink: `https://maps.google.com/?cid=${GOOGLE_MAPS_CID}`,
     },
-    hours: doc.hours ?? { days: "", time: "" },
+    hours: doc.hours ?? [],
     /* A platform with no glyph in SOCIAL_ICONS is dropped rather than rendered
        as an empty <svg>. */
     socials: (doc.socials ?? []).flatMap((social: any) => {

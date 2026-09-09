@@ -102,25 +102,36 @@ export const firmDetails = defineType({
     defineField({
       name: "hours",
       title: "Office hours",
-      type: "object",
+      description:
+        "One row per block of days, in the order they should read. A day the office is closed is a row too — put “Closed” in the Hours box rather than leaving the day out, so a visitor learns it is shut rather than wondering.",
+      type: "array",
       group: "contact",
-      options: { columns: 2 },
-      fields: [
-        defineField({
-          name: "days",
-          title: "Days",
-          description: "For example: Monday – Friday",
-          type: "string",
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: "time",
-          title: "Hours",
-          description: "For example: 9:00 AM – 5:00 PM",
-          type: "string",
-          validation: (rule) => rule.required(),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "hoursRow",
+          fields: [
+            defineField({
+              name: "days",
+              title: "Days",
+              description: "For example: Monday – Friday, or Saturday",
+              type: "string",
+              validation: (rule) =>
+                rule.required().max(30).warning("The card is narrow — keep the day range short."),
+            }),
+            defineField({
+              name: "time",
+              title: "Hours",
+              description: "For example: 8:00 AM – 6:00 PM, or Closed",
+              type: "string",
+              validation: (rule) =>
+                rule.required().max(30).warning("The card is narrow — keep the hours short."),
+            }),
+          ],
+          preview: { select: { title: "days", subtitle: "time" } },
         }),
       ],
+      validation: (rule) => rule.min(1),
     }),
     defineField({
       name: "socials",

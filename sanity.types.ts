@@ -497,6 +497,7 @@ export type ThankYouPage = {
   head?: {
     eyebrow: string;
     title: string;
+    message: string;
   };
   band?: {
     headingLines: string;
@@ -928,10 +929,12 @@ export type FirmDetails = {
     region: string;
     postalCode: string;
   };
-  hours?: {
+  hours?: Array<{
     days: string;
     time: string;
-  };
+    _type: "hoursRow";
+    _key: string;
+  }>;
   socials?: Array<{
     platform: "facebook" | "instagram" | "linkedin" | "x" | "youtube";
     url: string;
@@ -1425,7 +1428,7 @@ export type FAQS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/firmDetails.ts
 // Variable: FIRM_DETAILS_QUERY
-// Query: *[_id == "firmDetails"][0]{  firmName,  tagline,  phone,  email,  address,  hours,  socials[]{ _key, platform, url }}
+// Query: *[_id == "firmDetails"][0]{  firmName,  tagline,  phone,  email,  address,  hours[]{ _key, days, time },  socials[]{ _key, platform, url }}
 export type FIRM_DETAILS_QUERY_RESULT =
   | {
       firmName: null;
@@ -1447,10 +1450,11 @@ export type FIRM_DETAILS_QUERY_RESULT =
         region: string;
         postalCode: string;
       } | null;
-      hours: {
+      hours: Array<{
+        _key: string;
         days: string;
         time: string;
-      } | null;
+      }> | null;
       socials: Array<{
         _key: string;
         platform: "facebook" | "instagram" | "linkedin" | "x" | "youtube";
@@ -2167,7 +2171,7 @@ declare module "@sanity/client" {
     '\n  *[_id == "consultForm"][0]{\n    header{ eyebrow, headingLead, headingAccent, leadLines },\n    form{ cardTitle, cardIntro, submitLabel, privacyNote }\n  }\n': CONSULT_FORM_QUERY_RESULT;
     '\n  *[_id == "contactPage"][0]{\n    hero{ eyebrow, title, lead },\n    findUs{ eyebrow, headingLead, headingAccent, headingTail }\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  *[_type == "faq"] | order(orderRank){ question, answer, shortAnswer, showOnHomepage }\n': FAQS_QUERY_RESULT;
-    '*[_id == "firmDetails"][0]{\n  firmName,\n  tagline,\n  phone,\n  email,\n  address,\n  hours,\n  socials[]{ _key, platform, url }\n}': FIRM_DETAILS_QUERY_RESULT;
+    '*[_id == "firmDetails"][0]{\n  firmName,\n  tagline,\n  phone,\n  email,\n  address,\n  hours[]{ _key, days, time },\n  socials[]{ _key, platform, url }\n}': FIRM_DETAILS_QUERY_RESULT;
     '\n  *[_id == "globalSeo"][0]{ discourageCrawling, defaultOgImage }\n': GLOBAL_SEO_QUERY_RESULT;
     "\n  *[_id == $pageId][0].seo{\n    metaTitle, metaDescription, canonicalUrl, noIndex, ogImage\n  }\n": PAGE_SEO_QUERY_RESULT;
     '\n  *[_id in $ids]{ _id, _updatedAt, "noIndex": seo.noIndex }\n': STATIC_PAGE_SEO_QUERY_RESULT;
